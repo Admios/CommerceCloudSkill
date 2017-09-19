@@ -1,0 +1,18 @@
+ReorderIntent
+    Ask Commerce Cloud to reorder Toner from Printer Bay
+    Ask Commerce Cloud to reorder D Batteries from Battery Depot
+OnSaleIntent
+    Ask Commerce Cloud get battery depot sales for today
+    Ask Commerce Cloud for sales in battery depot
+    Ask Commerce Cloud to search for sales in battery depot
+    Ask Commerce Cloud get printer bay sales for today
+    Ask Commerce Cloud for sales in printer bay
+    Ask Commerce Cloud to search for sales in printer bay
+PlaceOrderIntent
+    Yes place order please
+    Place order
+    Yes
+OrderStatusIntent
+    Ask Commerce Cloud to get order status for Printer Bay
+    Ask Commerce Cloud get order status for Printer Bay
+    Ask Commerce Cloud what is the order status for Printer Bay

@@ -1,0 +1,19 @@
+ReorderIntent to reorder {ProductName} from {StoreName}
+
+OnSaleIntent get {StoreName} sales for today
+
+OnSaleIntent for sales in {StoreName}
+
+OnSaleIntent to search for sales in {StoreName}
+
+PlaceOrderIntent Yes place order please
+
+PlaceOrderIntent Place order
+
+PlaceOrderIntent Yes
+
+OrderStatusIntent to get order status for {StoreName}
+
+OrderStatusIntent get order status for {StoreName}
+
+OrderStatusIntent what is the order status for {StoreName}

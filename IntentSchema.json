@@ -1,0 +1,44 @@
+{
+  "intents": [
+    {
+      "intent": "ReorderIntent",
+      "slots": [
+        {
+          "name": "ProductName",
+          "type": "PRODUCT_NAMES"
+        },
+        {
+          "name": "StoreName",
+          "type": "STORE_NAMES"
+        }
+      ]
+    },
+    {
+      "intent": "OnSaleIntent",
+      "slots": [
+        {
+          "name": "StoreName",
+          "type": "STORE_NAMES"
+        }
+      ]
+    },
+    {
+      "intent": "OrderStatusIntent",
+      "slots": [
+        {
+          "name": "StoreName",
+          "type": "STORE_NAMES"
+        }
+      ]
+    },
+    {
+      "intent": "PlaceOrderIntent"
+    },
+    {
+      "intent": "AMAZON.StopIntent"
+    },
+    {
+      "intent": "AMAZON.CancelIntent"
+    }
+  ]
+}
