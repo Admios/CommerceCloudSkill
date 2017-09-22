@@ -60,7 +60,7 @@ exports.handler = function (event, context) {
   }
 };
 
-function getWish(){
+function getWish() {
   var myDate = new Date();
   var wish = '';
   var hours = myDate.getUTCHours() - 4;
@@ -78,25 +78,57 @@ function getWish(){
 }
 
 function placeOrder(product, store) {
-  return Math.floor(Math.random()*90000000) + 10000000;
+  return Math.floor(Math.random() * 90000000) + 10000000;
 }
 
-function getOnSaleByStore(name){
+function getPromo(callback) {
+  var url = 'http://alexacommercecloud.cloudhub.io/promo';
+  var req = http.get(url, function (res) {
+    var body = '';
+    res.on('data', function (chunk) {
+      body += chunk;
+    });
+    res.on('end', function () {
+      //body = body.replace(/\\/g, ''); //removes extra escape character
+      console.log('RAW PROMO', body);
+      var promotions = [];
+      if (!body.includes("Failed")){
+        var promos = JSON.parse(body);
+        promos.data.forEach(function (promo, idx) {
+          console.log(idx, promo.details.replace(/<\/?[^>]+(>|$)/g, ""));
+          promotions.push({
+            id: idx,
+            detail: promo.details.replace(/<\/?[^>]+(>|$)/g, "")
+          })
+        });
+      }
+      console.log('Parsed Promotions: ', promotions);
+      callback(promotions);
+    });
+  });
+
+  req.on('error', function (err) {
+    callback('', err)
+  });
+}
+
+
+function getOnSaleByStore(name) {
   var stores = [
     {
       name: 'Printer bay',
       products: [
         {
           name: 'Toner Cartridges',
-          discount: Math.floor(Math.random()*90) + 10
+          discount: Math.floor(Math.random() * 90) + 10
         },
         {
           name: 'Ink Cartridges',
-          discount: Math.floor(Math.random()*90) + 10
+          discount: Math.floor(Math.random() * 90) + 10
         },
         {
           name: 'Laser Cartridges',
-          discount: Math.floor(Math.random()*90) + 10
+          discount: Math.floor(Math.random() * 90) + 10
         }
       ]
     },
@@ -105,32 +137,58 @@ function getOnSaleByStore(name){
       products: [
         {
           name: 'Triple A Batteries',
-          discount: Math.floor(Math.random()*90) + 10
+          discount: Math.floor(Math.random() * 90) + 10
         },
         {
           name: 'Double A Batteries',
-          discount: Math.floor(Math.random()*90) + 10
+          discount: Math.floor(Math.random() * 90) + 10
         },
         {
           name: 'D Batteries',
-          discount: Math.floor(Math.random()*90) + 10
+          discount: Math.floor(Math.random() * 90) + 10
         }
       ]
     }
   ];
-  var rndmIdx = Math.floor(Math.random()*3);
+  var rndmIdx = Math.floor(Math.random() * 3);
   var response = 'I didn\'t catch the store name. Please try again.';
   if (name) {
     var discountData = stores.filter(
-      function(data){ return data.name.toLowerCase() === name.toLowerCase() }
+      function (data) {
+        return data.name.toLowerCase() === name.toLowerCase()
+      }
     );
-    if (discountData.length === 0){
-      response = 'Store <say-as interpret-as="spell-out">'+name+'</say-as> did not match any of our records.';
+    if (discountData.length === 0) {
+      response = 'Store <say-as interpret-as="spell-out">' + name + '</say-as> did not match any of our records.';
     } else {
       response = discountData[0].products[rndmIdx].name + ' is on sale for ' + discountData[0].products[rndmIdx].discount + ' percent off. Would you like to place an order?';
     }
   }
   return response;
+}
+
+function getOrderStatus(callback){
+  var url = 'http://alexacommercecloud.cloudhub.io/order_status';
+  var req = http.get(url, function (res) {
+    var body = '';
+    res.on('data', function (chunk) {
+      body += chunk;
+    });
+    res.on('end', function () {
+      //body = body.replace(/\\/g, ''); //removes extra escape character
+      console.log('RAW Order Status', body);
+      var orderStatus = '';
+      if (!body.includes("Failed")){
+        orderStatus = JSON.parse(body);
+      }
+      console.log('Parsed order status: ', orderStatus);
+      callback(orderStatus);
+    });
+  });
+
+  req.on('error', function (err) {
+    callback('', err)
+  });
 }
 
 function getOrderStatusByStore(name) {
@@ -141,15 +199,15 @@ function getOrderStatusByStore(name) {
       products: [
         {
           name: 'Toner Cartridges',
-          status: status[Math.floor(Math.random()*3)]
+          status: status[Math.floor(Math.random() * 3)]
         },
         {
           name: 'Ink Cartridges',
-          status: status[Math.floor(Math.random()*3)]
+          status: status[Math.floor(Math.random() * 3)]
         },
         {
           name: 'Laser Cartridges',
-          status: status[Math.floor(Math.random()*3)]
+          status: status[Math.floor(Math.random() * 3)]
         }
       ]
     },
@@ -158,26 +216,28 @@ function getOrderStatusByStore(name) {
       products: [
         {
           name: 'Triple A Batteries',
-          status: status[Math.floor(Math.random()*3)]
+          status: status[Math.floor(Math.random() * 3)]
         },
         {
           name: 'Double A Batteries',
-          status: status[Math.floor(Math.random()*3)]
+          status: status[Math.floor(Math.random() * 3)]
         },
         {
           name: 'D Batteries',
-          status: status[Math.floor(Math.random()*3)]
+          status: status[Math.floor(Math.random() * 3)]
         }
       ]
     }
   ];
-  var rndmIdx = Math.floor(Math.random()*3);
+  var rndmIdx = Math.floor(Math.random() * 3);
   var response = 'I didn\'t catch the store name. Please try again.';
   if (name) {
     var statusData = stores.filter(
-      function(data){ return data.name.toLowerCase() === name.toLowerCase() }
+      function (data) {
+        return data.name.toLowerCase() === name.toLowerCase()
+      }
     );
-    if (statusData.length === 0){
+    if (statusData.length === 0) {
       response = 'Store <say-as interpret-as="spell-out">' + name + '</say-as> did not match any of our records.';
     } else {
       response = 'Your order for: ' + statusData[0].products[rndmIdx].name + ' status is ' + statusData[0].products[rndmIdx].status + '.';
@@ -186,15 +246,14 @@ function getOrderStatusByStore(name) {
   return response;
 }
 
-function buildResponse (options) {
+function buildResponse(options) {
   var res = {
     version: '1.0',
     response: {
       outputSpeech: {
-        type: "SSML",
-        ssml: '<speak>'+options.speechText+'</speak>'
-      },
-      shouldEndSession: options.endSession
+        type: 'SSML',
+        ssml: '<speak>' + options.speechText + '</speak>'
+      }
     }
   };
 
@@ -202,10 +261,12 @@ function buildResponse (options) {
     res.response.reprompt = {
       outputSpeech: {
         type: 'SSML',
-        ssml: '<speak>'+options.repromptText+'</speak>'
+        ssml: '<speak>' + options.repromptText + '</speak>'
       }
     };
   }
+
+  res.response.shouldEndSession = options.endSession;
 
   if (options.session && options.session.attributes) {
     res.sessionAttributes = options.session.attributes;
@@ -245,14 +306,31 @@ function handleOnSaleIntent(request, context, session) {
   var store = slots.StoreName ? slots.StoreName.value : '';
   console.log('*** StoreName: ', store);
   options.session = session;
-  options.speechText = getOnSaleByStore(store);
-  options.repromptText = ' You can say Yes to order or No to cancel. ';
-  options.session.attributes.placeOrder = true;
-  options.endSession = false;
-  context.succeed(buildResponse(options));
+  getPromo(function (promos, err) {
+    if (err) {
+      context.fail(err);
+    } else {
+      if(promos.length === 0){
+        options.speechText = `I could not find any promos.`;
+      }else if (promos.length === 1) {
+        options.speechText = `I found one promo: ${promos[0].detail}`;
+        options.speechText += " Would you like to place an order? ";
+      } else {
+        options.speechText = `I found the following promos: `;
+        promos.forEach(function(promo){
+          options.speechText += `<say-as interpret-as="cardinal">${promo.id}</say-as>. ${promo.detail}`
+        });
+        options.speechText += " Would you like to place an order? ";
+      }
+      options.repromptText = " You can say Yes to order or No to cancel. ";
+      options.session.attributes.placeOrder = true;
+      options.endSession = false;
+      context.succeed(buildResponse(options));
+    }
+  });
 }
 
-function handlePlaceOrderIntent (request, context, session) {
+function handlePlaceOrderIntent(request, context, session) {
   var options = {};
   options.session = session;
   if (session.attributes.placeOrder) {
@@ -276,9 +354,17 @@ function handleOrderStatusIntent(request, context) {
   var slots = intent.slots;
   var store = slots.StoreName ? slots.StoreName.value : '';
   console.log('*** StoreName: ', store);
-  options.speechText = getOrderStatusByStore(store);
-  options.repromptText = '';
-  options.endSession = true;
-  context.succeed(buildResponse(options));
+  getOrderStatus(function(orderStatus, err) {
+    if (err) {
+      context.fail(err);
+    } else if (orderStatus) {
+      options.speechText = `Order number: <say-as interpret-as="digits">${orderStatus.orderNo}</say-as> status is ${orderStatus.status}.`;
+      options.endSession = true;
+    } else {
+      options.speechText = 'There is a problem getting your order status. Please try again later.';
+      options.endSession = true;
+    }
+    context.succeed(buildResponse(options));
+  });
 
 }
