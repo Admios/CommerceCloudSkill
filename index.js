@@ -266,6 +266,24 @@ function buildResponse(options) {
     };
   }
 
+  if (options.cardTitle) {
+    res.response.card = {
+      type: 'Simple',
+      title: options.cardTitle
+    };
+
+    if (options.imageUrl) { //imageUrl must be served via https
+      res.response.card.type = 'Standard';
+      res.response.card.text = options.cardContent;
+      res.response.card.image = {
+        smallImageUrl: options.imageUrl,
+        largeImageUrl: options.imageUrl
+      };
+    } else {
+      res.response.card.content = options.cardContent;
+    }
+  }
+
   res.response.shouldEndSession = options.endSession;
 
   if (options.session && options.session.attributes) {
