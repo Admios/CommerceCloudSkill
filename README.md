@@ -16,17 +16,13 @@
   
   `$ npm install -g lambda-local`
 
-3)Local testing command
-
-  `# lambda-local -l index.js -h handler -e event.json`
-
-4)AWS CLI setup
+3)AWS CLI setup
   
   `$ pip install awscli`
   
   `//Create a user and give permissions at IAM Management console`
   
-  `$ aws configure  //provide permission credentials`
+  `$ aws configure  //provide permissions credentials`
 
 
 **How to run manual tests**
@@ -39,6 +35,16 @@
 
 `source run eventReorder.json`
 
+`...`
+
+**Tests with debugging verbose**
+
+`source run -debug [event].json`
+
 **How to to deploy**
 
 `source publish.sh`
+
+**Enable Debug Verbosity in AWS Lambda**
+
+Add Environment variable key: __ENABLE_VERBOSE__ with value; __1__

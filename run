@@ -1,1 +1,10 @@
-lambda-local -l index.js -h handler -e $1
+case "$1" in
+
+  -debug)
+    env ENABLE_VERBOSE=1 lambda-local -l index.js -h handler -e $2
+    ;;
+
+   *)
+    lambda-local -l index.js -h handler -e $1
+
+esac

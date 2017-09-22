@@ -13,6 +13,10 @@ exports.handler = function (event, context) {
 
   try {
 
+    if(process.env.ENABLE_VERBOSE) {
+      console.log('Request:\n'+JSON.stringify(event,null,2));
+    }
+
     if (request.type === 'LaunchRequest') {
 
       handleLaunchRequest(context);
@@ -247,6 +251,11 @@ function getOrderStatusByStore(name) {
 }
 
 function buildResponse(options) {
+
+  if(process.env.ENABLE_VERBOSE) {
+    console.log('buildResponse options:\n'+JSON.stringify(options,null,2));
+  }
+
   var res = {
     version: '1.0',
     response: {
@@ -288,6 +297,10 @@ function buildResponse(options) {
 
   if (options.session && options.session.attributes) {
     res.sessionAttributes = options.session.attributes;
+  }
+
+  if(process.env.ENABLE_VERBOSE) {
+    console.log('Response:\n'+JSON.stringify(res,null,2));
   }
 
   return res;
