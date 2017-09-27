@@ -35,6 +35,19 @@
       "intent": "PlaceOrderIntent"
     },
     {
+      "intent": "OrderProductIntent",
+      "slots": [
+        {
+          "name": "ProductName",
+          "type": "PRODUCT_NAMES"
+        },
+        {
+          "name": "StoreName",
+          "type": "STORE_NAMES"
+        }
+      ]
+    },
+    {
       "intent": "AMAZON.StopIntent"
     },
     {

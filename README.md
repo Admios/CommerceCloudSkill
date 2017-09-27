@@ -23,19 +23,28 @@
   `//Create a user and give permissions at IAM Management console`
   
   `$ aws configure  //provide permissions credentials`
+  
+4)Mocha and Chai
+
+  `npm install -g mocha && npm install -g chai`
 
 
 **How to run manual tests**
 
-`source run eventLaunch.json`
+`source run [-debug] eventLaunch.json`
 
-`source run eventOnSale.json`
+`source run [-debug] eventOnSale.json`
 
-`source run eventOrderStatus.json`
+`source run [-debug] eventOrderStatus.json`
 
-`source run eventReorder.json`
+`source run [-debug] eventReorder.json`
 
 `...`
+
+**How to run automated tests**
+
+ `export NODE_PATH=~/.nvm/versions/node/v4.3.2/lib/node_modules`
+ `mocha tests.js`
 
 **Tests with debugging verbose**
 

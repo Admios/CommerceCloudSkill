@@ -22,4 +22,8 @@ OrderStatusIntent what is the order status for {StoreName}
 
 OrderStatusIntent what is the order status
 
+OrderProductIntent to order {ProductName} from {StoreName}
 
+OrderProductIntent to buy {ProductName} from {StoreName}
+
+OrderProductIntent to get me {ProductName}

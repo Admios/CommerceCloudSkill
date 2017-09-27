@@ -39,6 +39,9 @@ exports.handler = function (event, context) {
         case 'OrderStatusIntent':
           handleOrderStatusIntent(request, context);
           break;
+        case 'OrderProductIntent':
+          handleOrderProductIntent(request, context, session);
+          break;
         case 'AMAZON.StopIntent' || 'AMAZON.CancelIntent':
           context.succeed(buildResponse({
             speechText: "Good bye.",
@@ -94,19 +97,17 @@ function getPromo(callback) {
     });
     res.on('end', function () {
       //body = body.replace(/\\/g, ''); //removes extra escape character
-      console.log('RAW PROMO', body);
       var promotions = [];
       if (!body.includes("Failed")){
         var promos = JSON.parse(body);
         promos.data.forEach(function (promo, idx) {
-          console.log(idx, promo.details.replace(/<\/?[^>]+(>|$)/g, ""));
+
           promotions.push({
             id: idx,
             detail: promo.details.replace(/<\/?[^>]+(>|$)/g, "")
           })
         });
       }
-      console.log('Parsed Promotions: ', promotions);
       callback(promotions);
     });
   });
@@ -180,12 +181,10 @@ function getOrderStatus(callback){
     });
     res.on('end', function () {
       //body = body.replace(/\\/g, ''); //removes extra escape character
-      console.log('RAW Order Status', body);
       var orderStatus = '';
       if (!body.includes("Failed")){
         orderStatus = JSON.parse(body);
       }
-      console.log('Parsed order status: ', orderStatus);
       callback(orderStatus);
     });
   });
@@ -306,11 +305,24 @@ function buildResponse(options) {
   return res;
 }
 
+function getProductOptions(product, options) {
+  var options = [
+    {name: 'Option A'},
+    {name: 'Option B'},
+    {name: 'Option C'}
+  ];
+  var res = '';
+  options.forEach(function (option, idx) {
+    res += `<say-as interpret-as="cardinal">${idx}</say-as>. ${option.name}`;
+  });
+  return res;
+}
+
 function handleLaunchRequest(context) {
   var options = {};
   options.speechText = getWish() + 'Welcome to Commerce Cloud skill. Using our skill you can do your online shopping. Let\'s begin?';
   options.repromptText = 'You can say for example, Are there any sales for today?';
-  options.endSession = true;
+  options.endSession = false;
 
   context.succeed(buildResponse(options));
 }
@@ -332,10 +344,8 @@ function handleReorderIntent(request, context) {
 function handleOnSaleIntent(request, context, session) {
   var options = {};
   var intent = request.intent;
-  console.log('*** Intent: ', intent);
   var slots = intent.slots;
   var store = slots.StoreName ? slots.StoreName.value : '';
-  console.log('*** StoreName: ', store);
   options.session = session;
   getPromo(function (promos, err) {
     if (err) {
@@ -381,10 +391,8 @@ function handlePlaceOrderIntent(request, context, session) {
 function handleOrderStatusIntent(request, context) {
   var options = {};
   var intent = request.intent;
-  console.log('*** Intent: ', intent);
   var slots = intent.slots;
   var store = slots.StoreName ? slots.StoreName.value : '';
-  console.log('*** StoreName: ', store);
   getOrderStatus(function(orderStatus, err) {
     if (err) {
       context.fail(err);
@@ -398,4 +406,28 @@ function handleOrderStatusIntent(request, context) {
     context.succeed(buildResponse(options));
   });
 
+}
+
+function handleOrderProductIntent(request, context, session) {
+  var options = {};
+  var intent = request.intent;
+
+  var slots = intent.slots;
+  var product = slots && slots.ProductName ? slots.ProductName.value : '';
+  var store = slots && slots.StoreName ? slots.StoreName.value : '';
+
+  options.session = session;
+  if (product && store) {
+    var opts = getProductOptions(product, store);
+    var prodOpts = '';
+    if (opts.length > 0) prodOpts = ` Would you like any of the following options?: ${opts}`;
+    options.speechText = `Product ${product} from store ${store} added. ${prodOpts}`;
+    options.repromptText = " You can choose any of the listed options, if any. ";
+    options.session.attributes.productOptions = true;
+    options.endSession = false;
+  } else {
+    options.speechText = `I could not order the product. Please try again later.`;
+    options.endSession = true;
+  }
+  context.succeed(buildResponse(options));
 }
