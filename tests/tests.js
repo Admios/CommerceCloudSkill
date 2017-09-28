@@ -89,7 +89,7 @@ var event = {
 
 
 
-describe('All intents', function() {
+describe('All Commerce Cloud Skill Intents', function() {
   var ctx = new Context();
 
 
@@ -157,8 +157,8 @@ describe('All intents', function() {
 
   });
 
-  describe(`Test OnSaleIntent fallback message`, function() {
-    this.timeout(3000);
+  describe(`Test OnSaleIntent`, function() {
+    this.timeout(4000);
     before(function(done) {
       event.request.intent = {};
       event.session.attributes = {};
@@ -218,8 +218,8 @@ describe('All intents', function() {
 
   });
 
-  describe(`Test OrderStatusIntent fallback message`, function() {
-    this.timeout(3000);
+  describe(`Test OrderStatusIntent`, function() {
+    this.timeout(4000);
     before(function(done) {
       event.request.intent = {};
       event.session.attributes = {};
