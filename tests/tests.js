@@ -1,8 +1,8 @@
-'use strict'
+'use strict';
 
-var expect = require('chai').expect,
+var expect = require('chai').expect;
 
-  lambdaToTest = require('./index');
+var lambdaToTest = require('../index');
 
 
 function Context() {

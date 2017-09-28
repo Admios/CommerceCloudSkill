@@ -31,28 +31,27 @@
 
 **How to run manual tests**
 
-`source run [-debug] eventLaunch.json`
+Options: -debug Will display debugging verbosity
 
-`source run [-debug] eventOnSale.json`
+`source resources/scripts/run [-debug] tests/eventLaunch.json`
 
-`source run [-debug] eventOrderStatus.json`
+`source resources/scripts/run [-debug] tests/eventOnSale.json`
 
-`source run [-debug] eventReorder.json`
+`source resources/scripts/run [-debug] tests/eventOrderStatus.json`
+
+`source resources/scripts/run [-debug] tests/eventReorder.json`
 
 `...`
 
 **How to run automated tests**
 
- `export NODE_PATH=~/.nvm/versions/node/v4.3.2/lib/node_modules`
- `mocha tests.js`
-
-**Tests with debugging verbose**
-
-`source run -debug [event].json`
+`export NODE_PATH=~/.nvm/versions/node/v4.3.2/lib/node_modules`
+ 
+`mocha tests/*.js`
 
 **How to to deploy**
 
-`source publish.sh`
+`source resources/scripts/publish.sh`
 
 **Enable Debug Verbosity in AWS Lambda**
 
